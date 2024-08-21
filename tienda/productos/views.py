@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from .models import Cliente
 from .models import Producto
-from .forms import ProductoModelForm, ClienteModelForm
+from .forms import ProductoModelForm, ClienteModelForm, RegistroUsuarioForm
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.contrib.auth import login 
 
 # Create your views here.
 
@@ -53,3 +54,14 @@ def agregar_cliente(request):
     else:
         form = ClienteModelForm()
     return render(request, 'agregar_cliente.html', { 'form': form })
+
+def registrar_usuario(request):
+    if request.method == 'POST':
+        form = RegistroUsuarioForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('inicio')   
+    else:
+        form = RegistroUsuarioForm()
+        return render(request, 'registro.html', {'form' : form})
